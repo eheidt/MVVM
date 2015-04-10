@@ -2,7 +2,7 @@
 
 namespace MVVM
 {
-    public partial class Command
+    public class Command
     {
         public string Text { get; private set; }
 
@@ -50,7 +50,7 @@ namespace MVVM
         public event EventHandler CanExecuteChanged;
     }
 
-    public partial class BindableCommand : Command, System.Windows.Input.ICommand //The ICommand Dependency is hidden, because we want no UI Dependency in the ViewModels!!!
+    public class BindableCommand : Command, System.Windows.Input.ICommand //The ICommand Dependency is hidden, because we want no UI Dependency in the ViewModels!!!
     {
         public BindableCommand(string text, Action execute, Func<bool> canExecute = null)
             : base(text, execute, canExecute)

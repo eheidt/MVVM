@@ -11,10 +11,9 @@ namespace MVVM
         #region Properties
 
         private readonly Dictionary<string, object> _propertyCache = new Dictionary<string, object>();
-        private readonly Dictionary<string, Func<object, string>> _validateCache = new Dictionary<string, Func<object, string>>();
         private readonly Dictionary<string, string> _errorCache = new Dictionary<string, string>();
 
-        protected R GetValue<R>(Expression<Func<R>> property, Func<R> initialValue = null, Func<R, string> validate = null)
+        protected R GetValue<R>(Expression<Func<R>> property, Func<R> initialValue = null)
         {
             this.VerifyAccess();
 
@@ -34,15 +33,6 @@ namespace MVVM
                     viewModelBase.RaiseOnPropertyChanged(() => viewModelBase.Errors, () => this.RaisePropertyChanged(() => this.Errors));
                 }
 
-                if (validate != null)
-                {
-                    _validateCache.Add(propertyName, (Func<object, string>)delegate(object val)
-                    {
-                        return validate((R)val);
-                    });
-                }
-
-                this._propertyCache[propertyName] = value;
                 this._propertyCache[propertyName] = value;
                 this.RaisePropertyChanged(propertyName);
             }
@@ -50,7 +40,7 @@ namespace MVVM
             return (R)value;
         }
 
-        protected void SetValue<R>(Expression<Func<R>> property, R newValue)
+        protected void SetValue<R>(Expression<Func<R>> property, R newValue, Func<R, string> getError = null)
         {
             this.VerifyAccess();
 
@@ -62,11 +52,10 @@ namespace MVVM
 
                 this._propertyCache[propertyName] = newValue;
 
-                Func<object, string> getError = null;
-                if (_validateCache.TryGetValue(propertyName, out getError))
+                if (getError != null)
                 {
-                    var error = getError(this._propertyCache[propertyName]);
-                    
+                    var error = getError(newValue);
+
                     string oldError;
                     if (_errorCache.TryGetValue(propertyName, out oldError) == false)
                         oldError = string.Empty;

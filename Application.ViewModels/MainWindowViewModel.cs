@@ -12,7 +12,11 @@ namespace Application.ViewModels
         {
             get
             {
-                return base.GetValue(() => this.Number, () => 0,
+                return base.GetValue(() => this.Number, () => 0);
+            }
+            set
+            {
+                base.SetValue(() => this.Number, value,
                     v =>
                     {
                         if (v > 100)
@@ -21,17 +25,17 @@ namespace Application.ViewModels
                             return string.Empty;
                     });
             }
-            set
-            {
-                base.SetValue(() => this.Number, value);
-            }
         }
 
         public string Text
         {
             get
             {
-                return base.GetValue(() => this.Text, () => "Initial Text String",
+                return base.GetValue(() => this.Text, () => "Initial Text String");
+            }
+            set
+            {
+                base.SetValue(() => this.Text, value,
                     v =>
                     {
                         if (v.Length > 20)
@@ -39,10 +43,6 @@ namespace Application.ViewModels
                         else
                             return string.Empty;
                     });
-            }
-            set
-            {
-                base.SetValue(() => this.Text, value);
             }
         }
 
