@@ -71,6 +71,15 @@ namespace MVVM
             }
         }
 
+        public virtual IEnumerable<string> Errors
+        {
+            get
+            {
+                return _errorCache.Values.Where(err => string.IsNullOrEmpty(err) == false)
+                    .Concat(_propertyCache.Values.OfType<ViewModelBase>().SelectMany(vm => vm.Errors));
+            }
+        }
+
         protected Command GetCommand(
             string commandText,
             Action execute,
@@ -89,6 +98,7 @@ namespace MVVM
             else
             {
                 var cmd = new BindableCommand(commandText, execute, canExecute);
+
                 this._propertyCache[commandId] = cmd;
 
                 if (invalidateCanExecuteOnPropertyChange != null && invalidateCanExecuteOnPropertyChange.Any())
@@ -140,20 +150,11 @@ namespace MVVM
 
         #region IDataErrorInfo
 
-        public virtual IEnumerable<string> Errors
-        {
-            get
-            {
-                return _errorCache.Values.Where(err => string.IsNullOrEmpty(err) == false)
-                    .Concat(_propertyCache.Values.OfType<ViewModelBase>().SelectMany(vm => vm.Errors));
-            }
-        }
-
         string IDataErrorInfo.Error
         {
             get
             {
-                return Errors.FirstOrDefault();
+                return this.Errors.FirstOrDefault();
             }
         }
 

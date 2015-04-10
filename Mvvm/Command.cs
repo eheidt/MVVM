@@ -9,7 +9,7 @@ namespace MVVM
         private readonly Action _execute;
         private readonly Func<bool> _canExecute;
 
-        protected Command(string text, Action execute, Func<bool> canExecute = null)
+        internal protected Command(string text, Action execute, Func<bool> canExecute = null)
         {
             this.Text = text;
             this._execute = execute;
@@ -50,7 +50,7 @@ namespace MVVM
         public event EventHandler CanExecuteChanged;
     }
 
-    public class BindableCommand : Command, System.Windows.Input.ICommand //The ICommand Dependency is hidden, because we want no UI Dependency in the ViewModels!!!
+    internal class BindableCommand : Command, System.Windows.Input.ICommand //The ICommand Dependency is hidden, because we want no UI Dependency in the ViewModels!!!
     {
         public BindableCommand(string text, Action execute, Func<bool> canExecute = null)
             : base(text, execute, canExecute)
